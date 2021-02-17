@@ -1,0 +1,41 @@
+{% extends "checklist/main.html" %}
+
+{% block content %}
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-warning alert-dismissable" role="alert">
+            <button class="close" data-dismiss="alert">
+                <small><sup>x</sup></small>
+            </button>
+        </div>
+    {% endfor %}
+    {% endif %}
+    {% if checklists.count > 0 %}
+
+
+    <table class="table table-bordered">
+    {% for list in checklists %}
+        {% if list.completed %}
+            <tr class="table-secondary">
+                <td><a href="{% url 'uncross' list.id %}"><input class="form-check-input" type="checkbox" checked disabled></a></td>
+                <td><a href="/{{list.id}}">{{ list.name }}</a></td>
+                <td>{{ list.description }}</td>
+                <td>{{list.date|date:"d-m-Y"}}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td><a href="{% url 'cross_off' list.id %}"><input class="form-check-input" type="checkbox" disabled></a></td>
+                <td><a href="/{{list.id}}">{{ list.name }}</a></td>
+                <td>{{ list.description }}</td>
+                <td>{{list.date|date:"d-m-Y"}}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </table>
+
+{% else %}
+    <p>Nothing to show</p>
+    {% endif %}
+
+{% endblock %}
