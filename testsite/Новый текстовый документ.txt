@@ -1,0 +1,17 @@
+
+<!--                {% for task in subtasks[0] %}-->
+<!--                    <tr class="table-secondary">-->
+<!--                        <td><input class="form-check-input" type="checkbox" checked disabled></td>-->
+<!--                        <td>{{ task }}</td>-->
+<!--                    </tr>-->
+<!--                {% endfor %}-->
+
+
+[  <QuerySet
+	[<SubTask: Spider/crawl>, 
+	<SubTask: Check to metafiles>, 
+	<SubTask: Review webpage comments>, 
+	<SubTask: Identify web application framework and technologies used>, 
+	<SubTask: Fingerprint web server>]>, 
+  <QuerySet 
+	[<SubTask: Check for commonly used administrative URLs>, <SubTask: Check for old backups and unreferenced files>, <SubTask: Check for HTTP methods>, <SubTask: Check for Cross Site Tracing (XST)>, <SubTask: Test file extensions handling>]>, <QuerySet [<SubTask: Check SSL Version, algorithms and key length>, <SubTask: Login form is delivered over HTTPS>, <SubTask: Session Tokens are delivered over HTTPS>]>, <QuerySet [<SubTask: Testing for weak passwords>, <SubTask: Testing CAPTCHA>, <SubTask: Test for logout functionality presence>]>, <QuerySet []>, <QuerySet []>]

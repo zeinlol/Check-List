@@ -1,0 +1,103 @@
+{% extends "checklist/main.html" %}
+
+{% block content %}
+
+    <h2>{{ checklist }}</h2>
+
+
+<script>
+    var number = 0;
+</script>
+{% if categories %}
+    <table class="table table-bordered">
+        <script>
+            let counter = 0;
+        </script>
+        {% for category in categories %}
+        {{ forloop.counter0 }}
+        {% for task in subtasks %}
+          <li v-for="value in {{ tast }}">
+            {{ value }}
+          </li>
+        </ul>
+                {% endfor %}
+            {% if category.completed %}
+                <tr class="table-success">
+                    <td><a href="{% url 'uncross_category' category.id %}"><input class="form-check-input" type="checkbox" checked disabled></a></td>
+                    <td>{{ category.title }}</td>
+                </tr>
+                {% for task in subtasks %}
+                {% for item in task %}
+                <tr class="table-dark">
+                    <td><a href="{% url 'uncross_subtask' item.id %}"><input class="form-check-input" type="checkbox" checked disabled></a></td>
+                    <td>{{ item }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td><a href="{% url 'cross_category' category.id %}"><input class="form-check-input" type="checkbox" disabled></a></td>
+                    <td>{{ category.title }}</td>
+                </tr>
+
+                {% for task in subtasks %}
+                {% for item in task %}
+                {% if item.completed %}
+                <tr class="table-dark">
+                    <td><a href="{% url 'uncross_subtask' item.id %}"><input class="form-check-input" type="checkbox" checked disabled></a></td>
+                    <td>{{ item }}</td>
+                </tr>
+                {% else %}
+                <tr class="table-secondary">
+                    <td><a href="{% url 'cross_subtask' item.id %}"><input class="form-check-input" type="checkbox" disabled></a></td>
+                    <td>{{ item }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>Check List is empty</p>
+    {% endif %}
+
+        <!--  show all comments  -->
+
+
+    <!--  head  -->
+    {% with comments.count as total_comments %}
+    <h2>
+        {{ total_comments }} comment{{ total_comments|pluralize }}
+    </h2>
+    {% endwith %}
+
+
+    <!--  all comments  -->
+    {% for comment in comments %}
+        <div class="comment" style="background-color: LightBlue">
+            <p class="info">
+                <p>{{ comment.name }}<span style="margin-left: 20px;">{{ comment.created }}</span></p>
+            </p>
+            {{ comment.body|linebreaks }}
+
+        </div>
+    {% empty %}
+        <p>There are no comments yet.</p>
+    {% endfor %}
+
+<!--  add new comments  -->
+    {% if new_comment %}
+        <h2>Your comment has been added.</h2>
+    {% else %}
+        <h2>Add a new comment</h2>
+        <form action="{{checklist.id}}" method="post">
+            {{ comment_form.as_p }}
+            {{ form_images }}
+            {% csrf_token %}
+            <p><input type="submit" value="Add comment"></p>
+        </form>
+    {% endif %}
+
+
+{% endblock %}
