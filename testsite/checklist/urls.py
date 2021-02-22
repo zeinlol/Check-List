@@ -14,5 +14,5 @@ urlpatterns = [
     path('uncross_subtask/<item_id>', views.uncross_subtask, name='uncross_subtask'),
     path('cross_subtask/<item_id>', views.cross_subtask, name='cross_subtask'),
     path('checklist/<list_id>', views.show_full_list, name='checklist'),
-
+    path('editlist/<list_id>', views.edit_list, name='editlist'),
 ]

@@ -12,6 +12,9 @@
     {% endfor %}
     {% endif %}
 <h2>Aviable lists</h2>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_list_modal">
+  Add List
+    </button>
     {% if checklists.count > 0 %}
 
 
@@ -23,6 +26,7 @@
                 <td><a href="{% url 'checklist' list.id %}">{{ list.name }}</a></td>
                 <td>{{ list.description }}</td>
                 <td>{{list.date|date:"d-m-Y"}}</td>
+                <td><a href="{% url 'editlist' list.id %}">Edit</a></td>
             </tr>
         {% else %}
             <tr>
@@ -30,6 +34,7 @@
                 <td><a href="{% url 'checklist' list.id %}">{{ list.name }}</a></td>
                 <td>{{ list.description }}</td>
                 <td>{{list.date|date:"d-m-Y"}}</td>
+                <td><a href="{% url 'editlist' list.id %}">Edit</a></td>
             </tr>
         {% endif %}
     {% endfor %}
@@ -38,5 +43,28 @@
 {% else %}
     <p>Nothing to show</p>
     {% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="add_list_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <form action="#" method="post" enctype=multipart/form-data>
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+          {% csrf_token %}
+          {{add_list_form.as_p}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Create List</button>
+      </div>
+            </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

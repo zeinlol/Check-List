@@ -1,17 +1,30 @@
+<div class="accordion accordion-flush" id="accordionFlushedit">
 
-<!--                {% for task in subtasks[0] %}-->
-<!--                    <tr class="table-secondary">-->
-<!--                        <td><input class="form-check-input" type="checkbox" checked disabled></td>-->
-<!--                        <td>{{ task }}</td>-->
-<!--                    </tr>-->
-<!--                {% endfor %}-->
+    {% for category in list_items %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="subtasks{{category.0.id}}" aria-expanded="false" aria-controls="subtasks{{ category.0.id }}">
+                {{ category.0 }}
+            </button>
+        </h2>
+        <div id="subtasks{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushedit">
 
+            <div class="accordion-body" style="background-color: #ececec; margin:5px 0px 5px 0px;">
+                {% for subtask in category.1 %}
+                <p>{{ subtask }}</p>
+                {% endfor %}
+                <p>Add Subtask</p>
 
-[  <QuerySet
-	[<SubTask: Spider/crawl>, 
-	<SubTask: Check to metafiles>, 
-	<SubTask: Review webpage comments>, 
-	<SubTask: Identify web application framework and technologies used>, 
-	<SubTask: Fingerprint web server>]>, 
-  <QuerySet 
-	[<SubTask: Check for commonly used administrative URLs>, <SubTask: Check for old backups and unreferenced files>, <SubTask: Check for HTTP methods>, <SubTask: Check for Cross Site Tracing (XST)>, <SubTask: Test file extensions handling>]>, <QuerySet [<SubTask: Check SSL Version, algorithms and key length>, <SubTask: Login form is delivered over HTTPS>, <SubTask: Session Tokens are delivered over HTTPS>]>, <QuerySet [<SubTask: Testing for weak passwords>, <SubTask: Testing CAPTCHA>, <SubTask: Test for logout functionality presence>]>, <QuerySet []>, <QuerySet []>]
+                <form action="#" method="post" enctype=multipart/form-data>
+                    {% csrf_token %}
+                    {{categories_form.as_p}}
+                    <input type="hidden" name="category_id" value="{{ category.0.id }}">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Create SubTast</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

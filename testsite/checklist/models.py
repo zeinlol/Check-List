@@ -8,6 +8,7 @@ class CheckList(models.Model):
     description = models.CharField(max_length=150)
     completed = models.BooleanField(default=False)
     date = models.DateField("Created", default=datetime.date.today)
+    # users_with_access = models.ManyToManyField(User, related_name='checklists')                 # Connect to user for access
 
     def __str__(self):
         return str(self.name)
@@ -34,13 +35,15 @@ class SubTask(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(CheckList, on_delete=models.CASCADE, related_name='comments')
+    objects = models.Manager()
+    post = models.ForeignKey(SubTask, on_delete=models.CASCADE, db_index=True, null=True, related_name='comments')
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
+    photo = models.ImageField(upload_to='comments_images', null=True, blank=True)
 
     class Meta:
         ordering = ('created',)
@@ -49,6 +52,8 @@ class Comment(models.Model):
         return self.name
 
 
-class Image(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='image')
-    photo = models.ImageField(upload_to='comments_images')
+# class for image
+# class Image(models.Model):
+#     objects = models.Manager()
+#     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='image')
+#     photo = models.ImageField(upload_to='comments_images', null=True, blank=True)

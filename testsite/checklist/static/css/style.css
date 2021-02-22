@@ -1,0 +1,8 @@
+.completed {
+text-decoration: line-through;
+}
+
+.subtask-item {
+background-color: #ececec;
+margin: 5px 0px 5px 0px;
+}
