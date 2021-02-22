@@ -19,7 +19,7 @@
         </h2>
         {% for subtask in category.1 %}
         <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body completed">
+            <div class="accordion-body completed subtask-item">
                 <p><a href="{% url 'uncross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" checked disabled></a>{{ subtask }}</p>
             </div>
         </div>
@@ -36,13 +36,13 @@
         {% for subtask in category.1 %}
         {% if subtask.completed %}
         <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body completed">
+            <div class="accordion-body completed subtask-item">
                 <p><a href="{% url 'uncross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" checked disabled></a>{{ subtask }}</p>
             </div>
         </div>
         {% else %}
         <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
+            <div class="accordion-body subtask-item">
                 <p><a href="{% url 'cross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" disabled></a>{{ subtask }}</p>
 
                     {% if new_comment %}
