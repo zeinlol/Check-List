@@ -6,7 +6,9 @@
             {{ comment.created }}
         </p>
         {{ comment.body }}<br>
-        <img src="{{comment.photo.url}}" class="img-fluid comment-photo">
+        {% if comment.photo %}
+            <img src="{{comment.photo.url}}" class="img-fluid comment-photo">
+        {% endif %}
     </div>
     {% empty %}
     <p>There are no comments.</p>

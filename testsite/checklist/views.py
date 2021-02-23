@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, HttpResponse
-from .models import CheckList, Category, SubTask, Comment# , Image
-from .forms import ListForm, CommentForm, CategoryForm, SubTaskForm# , CommentImagesForm
+from django.http import HttpResponseRedirect
+from .models import CheckList, Category, SubTask
+from .forms import ListForm, CommentForm, CategoryForm, SubTaskForm
 from django.views import View
 from django.contrib import messages
 from django.urls import reverse
@@ -122,37 +122,14 @@ def delete_list(list_id):
     checklist.delete()
     return
 
-# class CreateImageView(View):
-#     form_images_class = CommentImagesForm
-#     model = Comment
-#
-#     def get(self, request):
-#         form_images = self.form_images_class()
-#         return form_images
-#
-#     def post(self, request):
-#         form = request.POST
-#         form_images = self.form_images_class(request.POST, request.FILES, request=request)
-#         if form_images.is_valid():
-#             image = form.save()
-#             form_images.save_for(image)
-#             return HttpResponseRedirect('/')
-#
-#         return HttpResponseRedirect('/')
-
 
 def show_full_list(request, list_id):
     checklist = get_object_or_404(CheckList, pk=list_id)
     categories = checklist.categories.order_by('id')
     subtasks = []
-    comments = []
     for each in categories:
         subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
-    #for each in subtasks:
-    #    comments.append(SubTask.objects.get(id=each.id).comments.order_by('id'))
-    #print(comments)
     list_items = zip(categories, subtasks)
-    #comments_list = zip(subtasks, comments)
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
@@ -169,9 +146,8 @@ def show_full_list(request, list_id):
         print(request.POST)
         comment_form = CommentForm()
     return render(request, 'checklist/list_view.html',
-                           {'checklist': checklist, 'categories': categories, 'subtasks': subtasks,
+                           {'checklist': checklist, 'categories': categories,
                             'list_items': list_items,
-                            #'comments_list': comments_list,
                             'comment_form': comment_form})
 
 

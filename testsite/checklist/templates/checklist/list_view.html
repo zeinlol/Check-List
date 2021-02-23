@@ -34,7 +34,12 @@
             </h2>
             {% for subtask in category.1 %}
             {% if subtask.completed %}
+
+        <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body completed subtask-item">
                 {% include 'checklist/includes/completed_subtask.html' %}
+            </div>
+        </div>
             {% else %}
             <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body subtask-item">

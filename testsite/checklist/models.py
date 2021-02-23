@@ -50,9 +50,3 @@ class SubTask(models.Model):
 
     def __str__(self):
         return self.title
-
-# class for image
-# class Image(models.Model):
-#     objects = models.Manager()
-#     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='image')
-#     photo = models.ImageField(upload_to='comments_images', null=True, blank=True)

@@ -5,6 +5,6 @@
             </button></p>
         <div class="collapse" id="comments-{{subtask.id}}">
             <div class="card card-body">
-                <p>{{ comments_list }}</p>
+                {% include 'checklist/includes/all_comments.html' %}
             </div>
         </div>
