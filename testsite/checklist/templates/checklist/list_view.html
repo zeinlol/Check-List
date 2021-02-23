@@ -10,48 +10,56 @@
     {% for category in list_items %}
     {% if category.0.completed %}
 
-        <div class="accordion-item completed">
-            <h2 class="accordion-header">
-                <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#{{ category.0 }}" aria-expanded="false" aria-controls="{{ category.0 }}">
-                    <a href="{% url 'uncross_category' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a>{{ category.0 }}
-                </a>
-            </h2>
-        <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+    <div class="accordion-item ">
+        <h2 class="accordion-header">
+            <a class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#category{{ category.0.id }}" aria-expanded="false" aria-controls="{{ category.0 }}">
+                <a href="{% url 'uncross_category' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a><span class="completed"> {{ category.0 }}</span>
+            </a>
+        </h2>
+        <div id="category{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body completed subtask-item">
-            {% for subtask in category.1 %}
+                {% for subtask in category.1 %}
                 {% include 'checklist/includes/completed_subtask.html' %}
-            {% endfor %}
+                {% endfor %}
             </div>
         </div>
 
-        </div>
+    </div>
     {% else %}
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <a class="accordion-button collapsed accordion-link" data-bs-toggle="collapse" data-bs-target="#{{ category.0 }}" aria-expanded="false" aria-controls="{{ category.0 }}">
-                    <a href="{% url 'cross_category' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ category.0 }}
-                </a>
-            </h2>
-            {% for subtask in category.1 %}
-            {% if subtask.completed %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <a class="accordion-button collapsed accordion-link" data-bs-toggle="collapse" data-bs-target="#category{{ category.0.id }}" aria-expanded="false" aria-controls="{{ category.0 }}">
+                <a href="{% url 'cross_category' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ category.0 }}
+            </a>
+        </h2>
+        {% for subtask in category.1 %}
+        {% if subtask.completed %}
 
-        <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+        <div id="category{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body completed subtask-item">
                 {% include 'checklist/includes/completed_subtask.html' %}
             </div>
         </div>
-            {% else %}
-            <div id="{{ category.0 }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                <div class="accordion-body subtask-item">
-                    <p><a href="{% url 'cross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" disabled></a> {{ subtask }}</p>
-                    {% include 'checklist/includes/all_comments.html' %}
-                    {% include 'checklist/includes/add_comment.html' %}
-
+        {% else %}
+        <div id="category{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body subtask-item">
+                <p><a href="{% url 'cross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" disabled></a> {{ subtask }}
+                    <a class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+                        Show Details
+                    </a>
+                </p>
+                <div class="collapse" id="comments-{{subtask.id}}">
+                    <div class="card card-body">
+                        {% include 'checklist/includes/all_comments.html' %}
+                        {% include 'checklist/includes/add_comment.html' %}
+                    </div>
                 </div>
+
             </div>
-            {% endif %}
-            {% endfor %}
         </div>
+        {% endif %}
+        {% endfor %}
+    </div>
     {% endif %}
     {% endfor %}
 </div>
