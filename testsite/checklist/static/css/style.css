@@ -9,8 +9,7 @@ padding: 10px
 }
 
 .subtask-item {
-background-color: #ececec;
-margin: 5px 0px 5px 0px;
+background-color: #e4e4e4;
 }
 
 .comment-photo{
@@ -19,5 +18,8 @@ margin: 5px 0px 5px 0px;
 
 a.accordion-link:hover {
   color: black;
+}
 
-
+.category_name{
+padding-left: 15px;
+}

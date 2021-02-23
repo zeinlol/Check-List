@@ -1,9 +1,9 @@
 <p>
-    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#commentsform-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
         Add Comment
     </button>
 </p>
-<div class="collapse" id="comments-{{subtask.id}}">
+<div class="collapse" id="commentsform-{{subtask.id}}">
     <div class="card card-body">
         {% if new_comment %}
         <h2>Your comment has been added.</h2>
