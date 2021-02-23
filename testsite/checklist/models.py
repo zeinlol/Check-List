@@ -8,7 +8,7 @@ class CheckList(models.Model):
     description = models.CharField(max_length=150)
     completed = models.BooleanField(default=False)
     date = models.DateField("Created", default=datetime.date.today)
-    # users_with_access = models.ManyToManyField(User, related_name='checklists')                 # Connect to user for access
+    # users_with_access = models.ManyToManyField(User, related_name='checklists')     # Connect to user for access
 
     def __str__(self):
         return str(self.name)
@@ -24,19 +24,8 @@ class Category(models.Model):
         return self.title
 
 
-class SubTask(models.Model):
-    objects = models.Manager()
-    title = models.CharField(max_length=150)
-    completed = models.BooleanField(default=False)
-    related_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True, null=True, related_name='subtasks')
-
-    def __str__(self):
-        return self.title
-
-
 class Comment(models.Model):
     objects = models.Manager()
-    post = models.ForeignKey(SubTask, on_delete=models.CASCADE, db_index=True, null=True, related_name='comments')
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
@@ -51,6 +40,16 @@ class Comment(models.Model):
     def __str__(self):
         return self.name
 
+
+class SubTask(models.Model):
+    objects = models.Manager()
+    title = models.CharField(max_length=150)
+    completed = models.BooleanField(default=False)
+    related_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True, null=True, related_name='subtasks')
+    comments = models.ManyToManyField('Comment', blank=True, related_name='post')
+
+    def __str__(self):
+        return self.title
 
 # class for image
 # class Image(models.Model):

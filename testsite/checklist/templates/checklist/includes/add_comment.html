@@ -1,0 +1,19 @@
+<p>
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+        Add Comment
+    </button>
+</p>
+<div class="collapse" id="comments-{{subtask.id}}">
+    <div class="card card-body">
+        {% if new_comment %}
+        <h2>Your comment has been added.</h2>
+        {% else %}
+        <form action="{{checklist.id}}" method="post" enctype=multipart/form-data>
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
+            <p><input type="submit" value="Add comment"></p>
+        </form>
+        {% endif %}
+    </div>
+</div>

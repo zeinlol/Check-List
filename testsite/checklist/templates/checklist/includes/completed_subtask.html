@@ -1,0 +1,10 @@
+
+        <p><a href="{% url 'uncross_subtask' subtask.id %}"><input class="form-check-input" type="checkbox" checked disabled></a> {{ subtask }}</p>
+        <p><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+                Show Details
+            </button></p>
+        <div class="collapse" id="comments-{{subtask.id}}">
+            <div class="card card-body">
+                <p>{{ comments_list }}</p>
+            </div>
+        </div>

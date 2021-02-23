@@ -5,13 +5,19 @@ from .forms import ListForm, CommentForm, CategoryForm, SubTaskForm# , CommentIm
 from django.views import View
 from django.contrib import messages
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 
 def show_lists(request):
+    add_list_form = ListForm
+    checklists = CheckList.objects.all().order_by("-date")[:20]
+    if request.method == 'POST' and 'delete_list' in request.POST:
+        delete_list(request.POST.get('list_id'))
 
-    if request.method == 'POST':
+        return render(request, 'checklist/checklist_list.html',
+                      {'checklists': checklists, 'add_list_form': add_list_form})
+    elif request.method == 'POST':
         form = ListForm(request.POST)
-
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -19,8 +25,6 @@ def show_lists(request):
             return HttpResponseRedirect('/')
 
     else:
-        add_list_form = ListForm
-        checklists = CheckList.objects.all().order_by("-date")[:20]
         return render(request, 'checklist/checklist_list.html', {'checklists': checklists, 'add_list_form': add_list_form})
 
 
@@ -138,54 +142,41 @@ def delete_list(list_id):
 
 
 def show_full_list(request, list_id):
-    checklist = CheckList.objects.get(pk=list_id)
+    checklist = get_object_or_404(CheckList, pk=list_id)
     categories = checklist.categories.order_by('id')
     subtasks = []
     comments = []
     for each in categories:
         subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
-    for each in subtasks:
-        comments.append(Comment.objects.filter(post__in=each, active=True).order_by('id'))
-    # subtasks = SubTask.objects.filter(related_category=categories).order_by('id')
-
-    # comments = checklist.comments.filter(active=True)
-    # images = Image.objects.all()[:5]
+    #for each in subtasks:
+    #    comments.append(SubTask.objects.get(id=each.id).comments.order_by('id'))
+    #print(comments)
     list_items = zip(categories, subtasks)
-    comments_list = zip(subtasks, comments)
+    #comments_list = zip(subtasks, comments)
+
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
-        # form_images = CommentImagesForm(request.POST, request.FILES, request=request)
         if comment_form.is_valid():
-        # if comment_form.is_valid() and form_images.is_valid():
-            # Create Comment object but don't save to database yet
             new_comment = comment_form.save(commit=False)
-            # Assign the current post to the comment
-            new_comment.post = SubTask.objects.get(pk=int(request.POST.get('subtask_id')))
+            new_comment.save()
+            task_id = request.POST.get('subtask_id')
+            new_comment.post.set(SubTask.objects.filter(pk=task_id))
             new_comment.save()
             new_comment.photo = request.FILES.get('photo')
-            # Save the comment to the database
-            # form_images.save_for(new_comment)
-            # for image in request.FILES.getlist('photos'):  # gallery - название поля, в котором передаются файлы
-            #     Image.objects.create(photo=image, comment=new_comment)  # Gallery - модель, imgobject - ImageField
             new_comment.save()
-
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
     else:
+        print(request.POST)
         comment_form = CommentForm()
-        # form_images = CommentImagesForm()
     return render(request, 'checklist/list_view.html',
                            {'checklist': checklist, 'categories': categories, 'subtasks': subtasks,
-                            #'comments': comments,
                             'list_items': list_items,
-                            'comments_list': comments_list,
+                            #'comments_list': comments_list,
                             'comment_form': comment_form})
-                            # 'images': images,
-                            # 'form_images': form_images})
 
 
 def edit_list(request, list_id):
-    checklist = CheckList.objects.get(pk=list_id)
+    checklist = get_object_or_404(CheckList, pk=list_id)
     categories = checklist.categories.order_by('id')
     subtasks = []
     for each in categories:

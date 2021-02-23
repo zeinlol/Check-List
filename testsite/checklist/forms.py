@@ -7,11 +7,24 @@ class ListForm(forms.ModelForm):
         model = CheckList
         fields = ["name",  "description", "completed", "date"]
 
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={'class': 'form-control'}),
+            'date': forms.DateInput(attrs={'class': 'form-control'}),
+        }
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('name', 'email', 'body', 'photo')
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'body': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'photo': forms.FileInput(attrs={'class': 'form-control'}),
+        }
 
 
 class CategoryForm(forms.ModelForm):
@@ -25,19 +38,3 @@ class SubTaskForm(forms.ModelForm):
     class Meta:
         model = SubTask
         fields = ('title', )
-
-
-# for multiple photos
-# class CommentImagesForm(forms.Form):
-#
-#     photos = forms.FileField(widget=forms.FileInput(attrs={'multiple': True}))
-#
-#
-#     def __init__(self, *args, **kwargs):
-#         if 'request' in kwargs:
-#             self.request = kwargs.pop('request')
-#         super().__init__(*args, **kwargs)
-#
-#     def save_for(self, comment):
-#         for photo in self.cleaned_data['photos']:
-#             Image(photo=photo, comment=comment).save()
