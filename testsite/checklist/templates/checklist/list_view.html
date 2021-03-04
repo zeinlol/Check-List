@@ -6,15 +6,15 @@
 <p>{{ checklist.description }}</p>
 
 <div class="accordion accordion-flush" id="accordionFlushExample">
-
+    {{ new_list_items }}
     {% for category in list_items %}
     <div class="accordion-item ">
         <h2 class="accordion-header">
             <span class="accordion-button collapsed accordion-link" data-bs-toggle="collapse" data-bs-target="#category{{ category.0.id }}" aria-expanded="false" aria-controls="{{ category.0 }}">
                 {% if category.0.completed %}
-                <a href="{% url 'uncross_category' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a> <span class="completed category_name">{{ category.0 }}</span>
+                <a href="{% url 'uncross_category' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a> <span class="completed category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
                 {% else %}
-                <a href="{% url 'cross_category' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> <span class="category_name">{{ category.0 }}</span>
+                <a href="{% url 'cross_category' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> <span class="category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
                 {% endif %}
             </span>
         </h2>
@@ -27,7 +27,7 @@
                 </div>
                 {% else %}
                 <div class="accordion-body subtask-item">
-                    <p><a href="{% url 'cross_subtask' subtask.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ subtask }}
+                    <p><a href="{% url 'cross_subtask' subtask.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ subtask }} <span style="color: red">{{subtask.status}}</span>
                         <a class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
                             Show Details
                         </a>

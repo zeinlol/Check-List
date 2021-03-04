@@ -1,0 +1,25 @@
+span.completed {
+text-decoration: line-through;
+}
+
+.comment{
+background-color: #ececec;
+margin: 0px 0px 10px 0px;
+padding: 10px
+}
+
+.subtask-item {
+background-color: #e4e4e4;
+}
+
+.comment-photo{
+  width: 200px;
+}
+
+a.accordion-link:hover {
+  color: black;
+}
+
+.category_name{
+padding-left: 15px;
+}

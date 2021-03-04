@@ -9,6 +9,9 @@
         {% if comment.photo %}
             <img src="{{comment.photo.url}}" class="img-fluid comment-photo">
         {% endif %}
+        {% if comment.file %}
+        <a href="{{comment.file.url}}" download="{{comment.file}}">{{comment.file}}</a>
+        {% endif %}
     </div>
     {% empty %}
     <p>There are no comments.</p>

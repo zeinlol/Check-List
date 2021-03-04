@@ -7,7 +7,68 @@
 
 
 <div class="accordion accordion-flush" id="accordionFlushedit">
+    <p>NEW</p>
 
+
+<form action="#" method="post" enctype=multipart/form-data>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+    </div>
+    {% csrf_token %}
+    {{item_form.as_p}}
+    <input type="hidden" name="list_id" value="{{ checklist.id }}">
+    <button type="submit" class="btn btn-primary" name="new_category">Create Category</button>
+</form>
+    {% for category in new_list_items %}
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#subtasks{{category.0.id}}" aria-expanded="false" aria-controls="subtasks{{ category.0.id }}">
+                {{ category.0.title }}
+            </button>
+        </h2>
+        <div id="subtasks{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushedit">
+            {% for subtask in category.1 %}
+            <div class="accordion-body subtask-item">
+                <p>{{ subtask }}
+                <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
+                    <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
+                    <button type="submit" class="btn btn-danger" name="delete_subtask">Delete</button>
+                </form>
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        <div id="subtasks{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushedit">
+
+            <div class="accordion-body subtask-item">
+                <p>Add Subtask</p>
+
+                <form action="#" method="post" enctype=multipart/form-data>
+                    {% csrf_token %}
+                    {{item_form.as_p}}
+                    <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" name="new_item">Create SubTast</button>
+                    </div>
+                </form>
+            </div>
+            <div class="accordion-body subtask-item">
+                <p>Delete Category</p>
+
+                <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
+                    <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                    <button type="submit" class="btn btn-danger" name="delete_item">Delete Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+
+<hr><hr>
+
+
+    <p>OLD</p>
     {% for category in list_items %}
     <div class="accordion-item">
         <h2 class="accordion-header">
