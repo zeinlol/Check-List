@@ -20,7 +20,8 @@
             <form action="change_name" method="post" enctype=multipart/form-data>{% csrf_token %}
                 <p>Change name: </p>
                 <input type="hidden" name="item_id" value="{{ category.0.id }}">
-                <input type="text" >
+                <input type="hidden" name="list_id" value="{{ checklist.id }}">
+                <input type="text" name="new_name" placeholder="{{ category.0 }}">
             </form>
 
             {% for subtask in category.1 %}

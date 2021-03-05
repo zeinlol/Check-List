@@ -124,6 +124,7 @@ def show_full_list(request, list_id):
         item.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -152,6 +153,12 @@ def edit_list(request, list_id):
     for each in category_items:
         subtasks_item.append(each.related_items.order_by('id'))
     new_list_items = zip(category_items, subtasks_item)
+
+    if request.method == 'POST' and 'new_name' in request.POST:
+        item = get_object_or_404(ListItem, pk=request.POST.get('item_id'))
+        item.title = request.POST.get('new_name')
+        item.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
     if request.method == 'POST' and 'new_category' in request.POST:
         form = ItemForm(request.POST)
