@@ -12,9 +12,6 @@
     {% endfor %}
     {% endif %}
 <h2>Aviable lists</h2>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_list_modal">
-  Add List
-    </button>
     {% if checklists.count > 0 %}
 
 
@@ -22,7 +19,7 @@
     {% for list in checklists %}
         {% if list.completed %}
             <tr class="table-secondary">
-                <td><a href="{% url 'uncross_list' list.id %}"><input class="form-check-input" type="checkbox" checked disabled></a></td>
+                <td><a href="{% url 'uncross_list' list.id %}"><i class="fa fa-check" aria-hidden="true"></a></td>
                 <td><a href="{% url 'checklist' list.id %}">{{ list.name }}</a></td>
                 <td>{{ list.description }}</td>
                 <td>{{list.date|date:"d-m-Y"}}</td>
@@ -30,7 +27,7 @@
             </tr>
         {% else %}
             <tr>
-                <td><a href="{% url 'cross_list' list.id %}"><input class="form-check-input" type="checkbox" disabled></a></td>
+                <td><a href="{% url 'cross_list' list.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a></td>
                 <td><a href="{% url 'checklist' list.id %}">{{ list.name }}</a></td>
                 <td>{{ list.description }}</td>
                 <td>{{list.date|date:"d-m-Y"}}</td>
@@ -43,6 +40,11 @@
 {% else %}
     <p>Nothing to show</p>
     {% endif %}
+
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_list_modal">
+  Add List
+    </button>
 
 <!-- Modal -->
 <div class="modal fade" id="add_list_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

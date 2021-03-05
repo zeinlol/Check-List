@@ -1,5 +1,6 @@
 from django.db import models
 import datetime
+from django.conf import settings
 
 
 class Status(models.Model):
@@ -28,33 +29,10 @@ class ListItem(models.Model):
     objects = models.Manager()
     title = models.CharField(max_length=150)
     completed = models.BooleanField(default=False)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True, default=settings.DEFAULT_STATUS_ID)
     related_list = models.ForeignKey(CheckList, on_delete=models.CASCADE, db_index=True, null=True, related_name='item_list')
     related_to = models.ForeignKey('self', on_delete=models.CASCADE, db_index=True, null=True, blank=True,related_name='related_items')
     comments = models.ManyToManyField('Comment', blank=True, related_name='comments')
-
-    def __str__(self):
-        return self.title
-
-
-class Category(models.Model):
-    objects = models.Manager()
-    title = models.CharField(max_length=150)
-    completed = models.BooleanField(default=False)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True)
-    related_list = models.ForeignKey(CheckList, on_delete=models.CASCADE, db_index=True, null=True, related_name='categories')
-
-    def __str__(self):
-        return self.title
-
-
-class SubTask(models.Model):
-    objects = models.Manager()
-    title = models.CharField(max_length=150)
-    completed = models.BooleanField(default=False)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True)
-    related_category = models.ForeignKey(Category, on_delete=models.CASCADE, db_index=True, null=True, related_name='subtasks')
-    comments = models.ManyToManyField('Comment', blank=True, related_name='post')
 
     def __str__(self):
         return self.title

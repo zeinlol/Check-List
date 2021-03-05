@@ -2,33 +2,62 @@
 
 {% block content %}
 
+<div id="app">
+            {{ message }}
+</div>
+
+
+<div class="col-12">
 <h2>{{ checklist }}</h2>
 <p>{{ checklist.description }}</p>
-
-<div class="accordion accordion-flush" id="accordionFlushExample">
+</div>
+<div class="col-12">
+<div class="accordion">
     {{ new_list_items }}
     {% for category in list_items %}
-    <div class="accordion-item ">
-        <h2 class="accordion-header">
-            <span class="accordion-button collapsed accordion-link" data-bs-toggle="collapse" data-bs-target="#category{{ category.0.id }}" aria-expanded="false" aria-controls="{{ category.0 }}">
+    <div class="card">
+        <h2 class="card-header">
+            <span class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#category{{ category.0.id }}" aria-expanded="true" aria-controls="category{{ category.0.id }}">
                 {% if category.0.completed %}
-                <a href="{% url 'uncross_category' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a> <span class="completed category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
+                <a href="{% url 'uncross_item' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a> <span class="completed category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
                 {% else %}
-                <a href="{% url 'cross_category' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> <span class="category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
+                <a href="{% url 'cross_item' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> <span class="category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
                 {% endif %}
             </span>
         </h2>
-        <div id="category{{ category.0.id }}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body completed subtask-item">
+        <div id="category{{ category.0.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#category{{ category.0.id }}">
+            <div class="card-body subtask-item">
+                <span>Status:
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{category.0.status}}</button>
+                        <div class="dropdown-menu" style="z-index:100">
+                            {% for status in statuses %}
+                                <form action="#" method="post">{% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                                    <input type="hidden" name="status_id" value="{{ status.id }}">
+                                    <button type="submit" class="dropdown-item" name="change_status">{{ status.title }}</button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                </span><hr>
                 {% for subtask in category.1 %}
                 {% if subtask.completed %}
-                <div class="accordion-body completed subtask-item">
+                <div class="completed subtask-item">
                     {% include 'checklist/includes/completed_subtask.html' %}
                 </div>
                 {% else %}
-                <div class="accordion-body subtask-item">
-                    <p><a href="{% url 'cross_subtask' subtask.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ subtask }} <span style="color: red">{{subtask.status}}</span>
-                        <a class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+                <div class="subtask-item">
+                    <span><a href="{% url 'cross_item' subtask.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ subtask }}
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{subtask.status}}</button>
+                        <div class="dropdown-menu">
+                            {% for status in statuses %}
+                                <form action="#" method="post">{% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ subtask.id }}">
+                                    <input type="hidden" name="status_id" value="{{ status.id }}">
+                                    <button type="submit" class="dropdown-item" name="change_status">{{ status.title }}</button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                        <a class="btn btn-primary" type="button" data-toggle="collapse" data-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
                             Show Details
                         </a>
                     </p>
@@ -47,6 +76,7 @@
     </div>
 
     {% endfor %}
+</div>
 </div>
 
 

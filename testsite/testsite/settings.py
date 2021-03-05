@@ -127,3 +127,7 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
 
+DEFAULT_STATUS_ID = 1  # untagged
+CROSSED_STATUS_ID = 2  # Done
+UNCROSSED_STATUS_ID = 3  # in progress
+

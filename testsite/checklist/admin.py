@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CheckList, Category, SubTask, Comment, ListItem, Status
+from .models import CheckList, Comment, ListItem, Status
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -14,18 +14,6 @@ class ListItemsAdmin(admin.ModelAdmin):
     search_fields = ('title', 'related_list',)
 
 
-class CategoriesAdmin(admin.ModelAdmin):
-    list_display = ('title', 'related_list')
-    list_filter = ('completed', 'related_list')
-    search_fields = ('title',)
-
-
-class SubtasksAdmin(admin.ModelAdmin):
-    list_display = ('title', 'related_category')
-    list_filter = ('completed', 'related_category')
-    search_fields = ('title',)
-
-
 class ListsAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'date', 'completed')
     list_filter = ('name', 'date', 'completed')
@@ -34,12 +22,11 @@ class ListsAdmin(admin.ModelAdmin):
 
 class StatusAdmin(admin.ModelAdmin):
     list_display = ('title', 'description')
+    list_filter = ('id',)
     search_fields = ('title',)
 
 
 admin.site.register(CheckList, ListsAdmin)
-admin.site.register(Category, CategoriesAdmin)
-admin.site.register(SubTask, SubtasksAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(ListItem, ListItemsAdmin)
 admin.site.register(Status, StatusAdmin)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import CheckList, Comment, Category, SubTask, ListItem
+from .models import CheckList, Comment, ListItem
 
 
 class ListForm(forms.ModelForm):
@@ -32,15 +32,3 @@ class ItemForm(forms.ModelForm):
     class Meta:
         model = ListItem
         fields = ('title',)
-
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ('title',)
-
-
-class SubTaskForm(forms.ModelForm):
-    class Meta:
-        model = SubTask
-        fields = ('title', )

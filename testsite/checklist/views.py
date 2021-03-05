@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
-from .models import CheckList, Category, SubTask, ListItem, Status
-from .forms import ListForm, CommentForm, CategoryForm, SubTaskForm, ItemForm
-from django.views import View
-from django.contrib import messages
-from django.urls import reverse
+from .models import CheckList, ListItem, Status
+from .forms import ListForm, CommentForm, ItemForm
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 
 def show_lists(request):
@@ -30,14 +28,66 @@ def show_lists(request):
 
 
 # # # # # # # # # # # # #  NEW CROSS/UNCROSS BLOCK
+# Bullshit  (OLD BLOCK)
+def cross_list(request, list_id):
+    item = CheckList.objects.get(pk=list_id)
+    item.completed = True
+    item.save()
+    categories = item.item_list.order_by('id')
+    for task in categories:
+        cross_item(request, task.id)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def uncross_list(request, list_id):
+    item = CheckList.objects.get(pk=list_id)
+    item.completed = False
+    item.save()
+    categories = item.item_list.order_by('id')
+    for task in categories:
+        uncross_item(request, task.id)
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
 def cross_item(request, item_id):
     item = ListItem.objects.get(pk=item_id)
     item.completed = True
-    item.status = Status.objects.get(Title='Done')
+    item.status = Status.objects.get(pk=settings.CROSSED_STATUS_ID)
     item.save()
     sub_item = item.related_items.order_by('id')
     for task in sub_item:
         cross_item(request, task.id)
+
+    all_items_completed = True
+    try:
+        category = ListItem.objects.get(related_items=item)
+        subtasks = category.related_items.order_by('id')
+        for task in subtasks:
+            if task.completed is False:
+                all_items_completed = False
+        if all_items_completed:
+            category.completed = True
+            category.save()
+    except:
+        pass
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def uncross_item(request, item_id):
+    item = ListItem.objects.get(pk=item_id)
+    item.completed = False
+    item.status = Status.objects.get(pk=settings.UNCROSSED_STATUS_ID)
+    item.save()
+    sub_item = item.related_items.order_by('id')
+    for task in sub_item:
+        uncross_item(request, task.id)
+    try:
+        category = ListItem.objects.get(related_items=item)
+        category.completed = False
+        category.save()
+    except:
+        pass
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
@@ -50,171 +100,48 @@ def delete_item(item_id):
     return
 
 
-# Bullshit  (OLD BLOCK)
-def cross_list(request, list_id):
-    item = CheckList.objects.get(pk=list_id)
-    item.completed = True
-    item.save()
-    categories = item.categories.order_by('id')
-    for task in categories:
-        cross_category(request, task.id)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def uncross_list(request, list_id):
-    item = CheckList.objects.get(pk=list_id)
-    item.completed = False
-    item.save()
-    categories = item.categories.order_by('id')
-    for task in categories:
-        uncross_category(request, task.id)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def cross_category(request, category_id):
-    item = Category.objects.get(pk=category_id)
-    item.completed = True
-    item.status = Status.objects.get(Title='Done')
-    item.save()
-    subtasks = item.subtasks.order_by('id')
-    for task in subtasks:
-        cross_subtask(request, task.id)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def uncross_category(request, category_id):
-    item = Category.objects.get(pk=category_id)
-    item.completed = False
-    item.status = Status.objects.get(title='Untouched')
-    item.save()
-    subtasks = item.subtasks.order_by('id')
-    for task in subtasks:
-        uncross_subtasks(request, task.id)
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def cross_subtask(request, item_id):
-    item = SubTask.objects.get(pk=item_id)
-    item.completed = True
-    item.save()
-    all_st_completed = True
-    category = Category.objects.get(subtasks=item)
-    subtasks = category.subtasks.order_by('id')
-    for task in subtasks:
-        if task.completed is False:
-            all_st_completed = False
-    if all_st_completed:
-        category.completed = True
-        category.save()
-
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def uncross_subtasks(request, item_id):
-    item = SubTask.objects.get(pk=item_id)
-    item.completed = False
-    item.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def uncross_subtask(request, item_id):
-    item = SubTask.objects.get(pk=item_id)
-    item.completed = False
-    item.save()
-    category = Category.objects.filter(subtasks=item)
-    for each in category:
-        each = Category.objects.get(pk=each.id)
-        each.completed = False
-        each.save()
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-def delete_subtask(categy_id):
-    subtask = SubTask.objects.get(pk=categy_id)
-    subtask.delete()
-    return
-
-
-def delete_category(category_id):
-    category = Category.objects.get(pk=category_id)
-    subtasks = SubTask.objects.filter(related_category=category)
-    for task in subtasks:
-        delete_subtask(task.id)
-    category.delete()
-    return
-
-
 def delete_list(list_id):
     checklist = CheckList.objects.get(pk=list_id)
-    categories = Category.objects.filter(related_list=checklist)
-    for task in categories:
-        delete_category(task.id)
+    items = ListItem.objects.filter(related_list=checklist)
+    for task in items:
+        delete_item(task.id)
     checklist.delete()
     return
 
 
-#    OLD LIST VIEW
-# def show_full_list(request, list_id):
-#     checklist = get_object_or_404(CheckList, pk=list_id)
-#     categories = checklist.categories.order_by('id')
-#     subtasks = []
-#     for each in categories:
-#         subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
-#     list_items = zip(categories, subtasks)
-#
-#     if request.method == 'POST':
-#         comment_form = CommentForm(request.POST)
-#         if comment_form.is_valid():
-#             new_comment = comment_form.save(commit=False)
-#             new_comment.save()
-#             task_id = request.POST.get('subtask_id')
-#             new_comment.post.set(SubTask.objects.filter(pk=task_id))
-#             new_comment.save()
-#             new_comment.photo = request.FILES.get('photo')
-#             new_comment.file = request.FILES.get('file')
-#             new_comment.save()
-#         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-#     else:
-#         print(request.POST)
-#         comment_form = CommentForm()
-#     return render(request, 'checklist/list_view.html',
-#                            {'checklist': checklist, 'categories': categories,
-#                             'list_items': list_items,
-#                             'comment_form': comment_form})
-
-
 def show_full_list(request, list_id):
     checklist = get_object_or_404(CheckList, pk=list_id)
-    categories = checklist.categories.order_by('id')
     category_items = checklist.item_list.order_by('id')
-    subtasks = []
-    for each in categories:
-        subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
-    list_items = zip(categories, subtasks)
+    statuses = Status.objects.filter().order_by('id')
     subtask_items = []
     for each in category_items:
-        subtask_items.append(ListItem.objects.filter(related_items=each).order_by('id'))
-    new_list_items = zip(category_items, subtask_items)
+        subtask_items.append(each.related_items.order_by('id'))
+    list_items = zip(category_items, subtask_items)
+
+    if request.method == 'POST' and 'change_status' in request.POST:
+        item = get_object_or_404(ListItem, pk=request.POST.get('item_id'))
+        item.status = get_object_or_404(Status, pk=request.POST.get('status_id'))
+        item.save()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
             new_comment.save()
-            task_id = request.POST.get('subtask_id')
-            new_comment.post.set(SubTask.objects.filter(pk=task_id))
+            task_id = request.POST.get('item_id')
+            new_comment.comments.set(ListItem.objects.filter(pk=task_id))
             new_comment.save()
             new_comment.photo = request.FILES.get('photo')
             new_comment.file = request.FILES.get('file')
             new_comment.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
     else:
-        print(request.POST)
         comment_form = CommentForm()
     return render(request, 'checklist/list_view.html',
-                  {'checklist': checklist, 'categories': categories,
+                  {'checklist': checklist,
+                   'statuses': statuses,
                    'list_items': list_items,
-                   'list_new_items': new_list_items,
                    'comment_form': comment_form})
 
 
@@ -257,4 +184,4 @@ def edit_list(request, list_id):
                   {
                    'new_list_items': new_list_items,
                    'item_form': item_form,
-                   'checklist': checklist,})
+                   'checklist': checklist})

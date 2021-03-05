@@ -1,4 +1,6 @@
-<p><a href="{% url 'uncross_subtask' subtask.id %}"><i class="fa fa-check" aria-hidden="true"></i></a><span class="completed"> {{ subtask }} <span style="color: red">{{subtask.status}}</span></span><a class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+<p><a href="{% url 'uncross_item' subtask.id %}"><i class="fa fa-check" aria-hidden="true"></i></a><span class="completed"> {{ subtask }}
+    <span style="color: red">{{subtask.status}}</span></span>
+    <a class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
              Show Details
     </a></p>
 <div class="collapse" id="comments-{{subtask.id}}">

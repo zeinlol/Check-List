@@ -22,4 +22,10 @@ a.accordion-link:hover {
 
 .category_name{
 padding-left: 15px;
+pointer-events: none;
+}
+
+.category_name:hover{
+padding-left: 15px;
+pointer-events: none;
 }

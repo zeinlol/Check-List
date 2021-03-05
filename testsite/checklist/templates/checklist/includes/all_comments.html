@@ -7,7 +7,7 @@
         </p>
         {{ comment.body }}<br>
         {% if comment.photo %}
-            <img src="{{comment.photo.url}}" class="img-fluid comment-photo">
+            <img src="{{comment.photo.url}}" class="img-fluid comment-photo"><br>
         {% endif %}
         {% if comment.file %}
         <a href="{{comment.file.url}}" download="{{comment.file}}">{{comment.file}}</a>

@@ -11,7 +11,7 @@
         <form action="{{checklist.id}}" method="post" enctype=multipart/form-data>
             {% csrf_token %}
             {{ comment_form.as_p }}
-            <input type="hidden" name="subtask_id" value="{{ subtask.id }}">
+            <input type="hidden" name="item_id" value="{{ subtask.id }}">
             <p><input type="submit" value="Add comment"></p>
         </form>
         {% endif %}
