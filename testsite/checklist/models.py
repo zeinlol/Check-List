@@ -30,7 +30,7 @@ class ListItem(models.Model):
     completed = models.BooleanField(default=False)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True)
     related_list = models.ForeignKey(CheckList, on_delete=models.CASCADE, db_index=True, null=True, related_name='item_list')
-    related_items = models.ManyToManyField('self', blank=True, related_name='related_items')
+    related_to = models.ForeignKey('self', on_delete=models.CASCADE, db_index=True, null=True, blank=True,related_name='related_items')
     comments = models.ManyToManyField('Comment', blank=True, related_name='comments')
 
     def __str__(self):

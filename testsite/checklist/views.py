@@ -187,7 +187,6 @@ def show_full_list(request, list_id):
     checklist = get_object_or_404(CheckList, pk=list_id)
     categories = checklist.categories.order_by('id')
     category_items = checklist.item_list.order_by('id')
-    print(category_items)
     subtasks = []
     for each in categories:
         subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
@@ -221,50 +220,12 @@ def show_full_list(request, list_id):
 
 def edit_list(request, list_id):
     checklist = get_object_or_404(CheckList, pk=list_id)
-    categories = checklist.categories.order_by('id')
     category_items = checklist.item_list.order_by('id')
-    subtasks = []
-    for each in categories:
-        subtasks.append(SubTask.objects.filter(related_category_id=each).order_by('id'))
     subtasks_item = []
     for each in category_items:
-        subtasks_item.append(ListItem.objects.filter(related_items=each).order_by('id'))
-    list_items = zip(categories, subtasks)
+        subtasks_item.append(each.related_items.order_by('id'))
     new_list_items = zip(category_items, subtasks_item)
 
-    if request.method == 'POST' and 'category' in request.POST:
-        categories_form = CategoryForm(request.POST)
-        if categories_form.is_valid():
-            new_cat = categories_form.save(commit=False)
-            new_cat.related_list = checklist
-            new_cat.save()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-    if request.method == 'POST' and 'subtask' in request.POST:
-        subtask_form = SubTaskForm(request.POST)
-        if subtask_form.is_valid():
-            new_task = subtask_form.save(commit=False)
-            new_task.related_category = Category.objects.get(pk=int(request.POST.get('category_id')))
-            new_task.save()
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-    if request.method == 'POST' and 'delete_list' in request.POST:
-        delete_list(request.POST.get('list_id'))
-
-        return HttpResponseRedirect('/')
-
-    if request.method == 'POST' and 'delete_category' in request.POST:
-        delete_category(request.POST.get('category_id'))
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-    if request.method == 'POST' and 'delete_subtask' in request.POST:
-        delete_subtask(request.POST.get('subtask_id'))
-
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-    # # # # # # # # # # # # # NEW ITEM FORM
     if request.method == 'POST' and 'new_category' in request.POST:
         form = ItemForm(request.POST)
         if form.is_valid():
@@ -277,7 +238,7 @@ def edit_list(request, list_id):
         form = ItemForm(request.POST)
         if form.is_valid():
             new_cat = form.save(commit=False)
-            new_cat.related_item = request.POST.get('item_id')
+            new_cat.related_to = get_object_or_404(ListItem, pk=request.POST.get('item_id'))
             new_cat.save()
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -285,15 +246,15 @@ def edit_list(request, list_id):
         delete_item(request.POST.get('item_id'))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+    if request.method == 'POST' and 'delete_list' in request.POST:
+        delete_list(request.POST.get('list_id'))
+
+        return HttpResponseRedirect('/')
+
     else:
-        categories_form = CategoryForm
-        subtask_form = SubTaskForm
         item_form = ItemForm
     return render(request, 'checklist/edit_list.html',
-                  {'list_items': list_items,
+                  {
                    'new_list_items': new_list_items,
-                   'categories_form': categories_form,
                    'item_form': item_form,
-                   'category_items': category_items,
-                   'checklist': checklist,
-                   'subtask_form': subtask_form})
+                   'checklist': checklist,})
