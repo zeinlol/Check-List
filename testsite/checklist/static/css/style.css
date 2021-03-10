@@ -1,31 +1,37 @@
 span.completed {
-text-decoration: line-through;
+    text-decoration: line-through;
 }
 
-.comment{
-background-color: #ececec;
-margin: 0px 0px 10px 0px;
-padding: 10px
+.comment {
+    background-color: #ececec;
+    margin: 0px 0px 10px 0px;
+    padding: 10px
 }
 
 .subtask-item {
-background-color: #e4e4e4;
+    background-color: #e4e4e4;
 }
 
-.comment-photo{
-  width: 200px;
+.comment-photo {
+    width: 200px;
 }
 
 a.accordion-link:hover {
-  color: black;
+    color: black;
 }
 
-.category_name{
-padding-left: 15px;
-pointer-events: none;
+.category_name {
+    padding-left: 15px;
+    pointer-events: none;
 }
 
-.category_name:hover{
-padding-left: 15px;
-pointer-events: none;
+.category_name:hover {
+    padding-left: 15px;
+    pointer-events: none;
 }
+
+.drop {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+

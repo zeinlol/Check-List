@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import CheckList, Comment, ListItem, Status
 
 
@@ -30,4 +31,3 @@ admin.site.register(CheckList, ListsAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(ListItem, ListItemsAdmin)
 admin.site.register(Status, StatusAdmin)
-

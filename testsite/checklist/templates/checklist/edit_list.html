@@ -2,77 +2,83 @@
 
 {% block content %}
 <div class="col-12">
-<h2>{{ checklist }}</h2>
-<p>{{ checklist.description }}</p>
+    <h2>{{ checklist }}</h2>
+    <p>{{ checklist.description }}</p>
 
-</div><div class="col-12">
-<div class="accordion">
-    {% for category in new_list_items %}
-    <div class="card">
-        <h2 class="card-header">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#subtasks{{category.0.id}}" aria-expanded="true" aria-controls="subtasks{{ category.0.id }}">
-                {{ category.0.title }}
-            </button>
-        </h2>
-        <div id="subtasks{{ category.0.id }}" class="collapse" aria-labelledby="flush-headingOne" data-parent="#subtasks{{ category.0.id }}">
-            <div class="card-body subtask-item">
+</div>
+<div class="col-12">
+    <div class="accordion">
+        {% for category in new_list_items %}
+        <div class="card">
+            <h2 class="card-header">
+                <button class="btn btn-link btn-block text-left collapsed item-name" type="button"
+                        data-toggle="collapse"
+                        data-target="#subtasks{{category.0.id}}" aria-expanded="true"
+                        aria-controls="subtasks{{ category.0.id }}">
+                    {{ category.0.title }}
+                </button>
+            </h2>
+            <div id="subtasks{{ category.0.id }}" class="collapse" aria-labelledby="flush-headingOne"
+                 data-parent="#subtasks{{ category.0.id }}">
+                <div class="card-body subtask-item">
 
-            <form action="change_name" method="post" enctype=multipart/form-data>{% csrf_token %}
-                <p>Change name: </p>
-                <input type="hidden" name="item_id" value="{{ category.0.id }}">
-                <input type="hidden" name="list_id" value="{{ checklist.id }}">
-                <input type="text" name="new_name" placeholder="{{ category.0 }}">
-            </form>
+                    <form action="change_name" method="post" enctype=multipart/form-data>{% csrf_token %}
+                        <p>Change name: </p>
+                        <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                        <input type="hidden" name="list_id" value="{{ checklist.id }}">
+                        <input type="text" name="new_name" placeholder="{{ category.0 }}">
+                    </form>
 
-            {% for subtask in category.1 %}
-                <p>{{ subtask }}</p>
-                <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
-                    <input type="hidden" name="item_id" value="{{ subtask.id }}">
-                    <button type="submit" class="btn btn-danger" name="delete_item">Delete</button>
-                </form>
-            <hr>
-            {% endfor %}
+                    {% for subtask in category.1 %}
+                    <p>{{ subtask }}</p>
+                    <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ subtask.id }}">
+                        <button type="submit" class="btn btn-danger" name="delete_item">Delete</button>
+                    </form>
+                    <hr>
+                    {% endfor %}
 
-                <p>Add Subtask</p>
+                    <p>Add Subtask</p>
 
-                <form action="#" method="post" enctype=multipart/form-data>
-                    {% csrf_token %}
-                    {{item_form.as_p}}
-                    <input type="hidden" name="item_id" value="{{ category.0.id }}">
-                    <div class="text-left">
-                        <button type="submit" class="btn btn-primary" name="new_item">Create SubTask</button>
-                    </div>
-                </form><HR>
-                <p>Delete Category</p>
+                    <form action="#" method="post" enctype=multipart/form-data>
+                        {% csrf_token %}
+                        {{item_form.as_p}}
+                        <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                        <div class="text-left">
+                            <button type="submit" class="btn btn-primary" name="new_item">Create SubTask</button>
+                        </div>
+                    </form>
+                    <HR>
+                    <p>Delete Category</p>
 
-                <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
-                    <input type="hidden" name="item_id" value="{{ category.0.id }}">
-                    <button type="submit" class="btn btn-danger" name="delete_item">Delete Category</button>
-                </form>
+                    <form action="#" method="post" enctype=multipart/form-data>{% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ category.0.id }}">
+                        <button type="submit" class="btn btn-danger" name="delete_item">Delete Category</button>
+                    </form>
+                </div>
             </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-</div>
-<div class="col-12">
-<form action="#" method="post" enctype=multipart/form-data>
-    <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-    </div>
-    {% csrf_token %}
-    {{item_form.as_p}}
-    <input type="hidden" name="list_id" value="{{ checklist.id }}">
-    <button type="submit" class="btn btn-primary" name="new_category">Create Category</button>
-</form>
 </div>
 <div class="col-12">
-<form action="{% url 'home' %}" method="post" enctype=multipart/form-data>{% csrf_token %}
-    <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete List</h5>
-    </div>
-    <input type="hidden" name="list_id" value="{{ checklist.id }}">
-    <button type="submit" class="btn btn-danger" name="delete_list">Delete List</button>
-</form>
+    <form action="#" method="post" enctype=multipart/form-data>
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+        </div>
+        {% csrf_token %}
+        {{item_form.as_p}}
+        <input type="hidden" name="list_id" value="{{ checklist.id }}">
+        <button type="submit" class="btn btn-primary" name="new_category">Create Category</button>
+    </form>
+</div>
+<div class="col-12">
+    <form action="{% url 'home' %}" method="post" enctype=multipart/form-data>{% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Delete List</h5>
+        </div>
+        <input type="hidden" name="list_id" value="{{ checklist.id }}">
+        <button type="submit" class="btn btn-danger" name="delete_list">Delete List</button>
+    </form>
 </div>
 {% endblock %}

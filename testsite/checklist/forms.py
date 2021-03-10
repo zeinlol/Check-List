@@ -1,11 +1,12 @@
 from django import forms
+
 from .models import CheckList, Comment, ListItem
 
 
 class ListForm(forms.ModelForm):
     class Meta:
         model = CheckList
-        fields = ["name",  "description", "completed", "date"]
+        fields = ["name", "description", "completed", "date"]
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),

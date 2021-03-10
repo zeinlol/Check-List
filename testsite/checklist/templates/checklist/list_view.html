@@ -2,83 +2,95 @@
 
 {% block content %}
 
-<div id="app">
-            {{ message }}
-</div>
-
 
 <div class="col-12">
-<h2>{{ checklist }}</h2>
-<p>{{ checklist.description }}</p>
+    <h2>{{ checklist }}</h2>
+    <p style="word-wrap: break-word">{{ checklist.description }}</p>
 </div>
 <div class="col-12">
-<div class="accordion">
-    {{ new_list_items }}
-    {% for category in list_items %}
-    <div class="card">
-        <h2 class="card-header">
-            <span class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#category{{ category.0.id }}" aria-expanded="true" aria-controls="category{{ category.0.id }}">
+    <div class="accordion">
+        {{ new_list_items }}
+        {% for category in list_items %}
+        <div class="card item-name">
+            <h2 class="card-header">
+            <span class="btn btn-link btn-block text-left collapsed " data-toggle="collapse"
+                  data-target="#category{{ category.0.id }}" aria-expanded="true"
+                  aria-controls="category{{ category.0.id }}">
                 {% if category.0.completed %}
-                <a href="{% url 'uncross_item' category.0.id %}" class="accordion-link"><i class="fa fa-check" aria-hidden="true"></i></a> <span class="completed category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
+                <a href="{% url 'uncross_item' category.0.id %}" class="accordion-link"><i class="fa fa-check fa-2x"
+                                                                                           aria-hidden="true"></i></a>
+                <span class="completed category_name">{{ category.0 }}
+                    <span style="color: red">{{category.0.status}}</span></span>
                 {% else %}
-                <a href="{% url 'cross_item' category.0.id %}" class="accordion-link"><i class="fa fa-square-o" aria-hidden="true"></i></a> <span class="category_name">{{ category.0 }} <span style="color: red">{{category.0.status}}</span></span>
+                <a href="{% url 'cross_item' category.0.id %}" class="accordion-link"><i class="fa fa-square-o fa-2x"
+                                                                                         aria-hidden="true"></i></a>
+                <span class="category_name">{{ category.0 }} <span
+                        style="color: red">{{category.0.status}}</span></span>
                 {% endif %}
             </span>
-        </h2>
-        <div id="category{{ category.0.id }}" class="collapse" aria-labelledby="headingOne" data-parent="#category{{ category.0.id }}">
-            <div class="card-body subtask-item">
+            </h2>
+            <div id="category{{ category.0.id }}" class="collapse" aria-labelledby="headingOne"
+                 data-parent="#category{{ category.0.id }}">
+                <div class="card-body subtask-item">
                 <span>Status:
-                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{category.0.status}}</button>
-                        <div class="dropdown-menu" style="z-index:100">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">{{category.0.status}}</button>
+                        <div class="dropdown-menu">
                             {% for status in statuses %}
                                 <form action="#" method="post">{% csrf_token %}
                                     <input type="hidden" name="item_id" value="{{ category.0.id }}">
                                     <input type="hidden" name="status_id" value="{{ status.id }}">
-                                    <button type="submit" class="dropdown-item" name="change_status">{{ status.title }}</button>
+                                    <button type="submit" class="dropdown-item"
+                                            name="change_status">{{ status.title }}</button>
                                 </form>
                             {% endfor %}
                         </div>
-                </span><hr>
-                {% for subtask in category.1 %}
-                {% if subtask.completed %}
-                <div class="completed subtask-item">
-                    {% include 'checklist/includes/completed_subtask.html' %}
-                </div>
-                {% else %}
-                <div class="subtask-item">
-                    <span><a href="{% url 'cross_item' subtask.id %}"><i class="fa fa-square-o" aria-hidden="true"></i></a> {{ subtask }}
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{subtask.status}}</button>
+                </span>
+                    <hr>
+                    {% for subtask in category.1 %}
+                    {% if subtask.completed %}
+                    <div class="completed subtask-item">
+                        {% include 'checklist/includes/completed_subtask.html' %}
+                    </div>
+                    {% else %}
+                    <div class="subtask-item">
+                        <span class="item-name"><a href="{% url 'cross_item' subtask.id %}"><i class="fa fa-square-o"
+                                                                                               aria-hidden="true"></i></a> {{ subtask }}</span>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">{{subtask.status}}
+                        </button>
                         <div class="dropdown-menu">
                             {% for status in statuses %}
-                                <form action="#" method="post">{% csrf_token %}
-                                    <input type="hidden" name="item_id" value="{{ subtask.id }}">
-                                    <input type="hidden" name="status_id" value="{{ status.id }}">
-                                    <button type="submit" class="dropdown-item" name="change_status">{{ status.title }}</button>
-                                </form>
+                            <form action="#" method="post">{% csrf_token %}
+                                <input type="hidden" name="item_id" value="{{ subtask.id }}">
+                                <input type="hidden" name="status_id" value="{{ status.id }}">
+                                <button type="submit" class="dropdown-item"
+                                        name="change_status">{{ status.title }}
+                                </button>
+                            </form>
                             {% endfor %}
                         </div>
-                        <a class="btn btn-primary" type="button" data-toggle="collapse" data-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
+                        <a class="btn btn-primary" type="button" data-toggle="collapse"
+                           data-target="#comments-{{subtask.id}}" aria-expanded="false" aria-controls="collapseExample">
                             Show Details
                         </a>
-                    </p>
-                    <div class="collapse" id="comments-{{subtask.id}}">
-                        <div class="card card-body">
-                            {% include 'checklist/includes/all_comments.html' %}
-                            {% include 'checklist/includes/add_comment.html' %}
+                        <div class="collapse" id="comments-{{subtask.id}}">
+                            <div class="card card-body">
+                                {% include 'checklist/includes/all_comments.html' %}
+                                {% include 'checklist/includes/add_comment.html' %}
+                            </div>
                         </div>
                     </div>
+                    {% endif %}
+                    <hr>
+                    {% endfor %}
                 </div>
-                {% endif %}
-                <hr>
-                {% endfor %}
             </div>
         </div>
+
+        {% endfor %}
     </div>
-
-    {% endfor %}
 </div>
-</div>
-
 
 
 {% endblock %}

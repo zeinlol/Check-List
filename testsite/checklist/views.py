@@ -1,11 +1,34 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
-from .models import CheckList, ListItem, Status
-from .forms import ListForm, CommentForm, ItemForm
-from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+
+from .forms import ListForm, CommentForm, ItemForm
+from .models import CheckList, ListItem, Status
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from rest_framework import permissions
+from .serializers import UserSerializer, GroupSerializer, CheckListSerializer, ListItemSerializer
 
 
+class CheckListViewSet(viewsets.ModelViewSet):
+    queryset = CheckList.objects.all().order_by('-date')
+    serializer_class = CheckListSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+# # # # # # # # # # # # # # #  OLD FUNCTIONS
 def show_lists(request):
     add_list_form = ListForm
     checklists = CheckList.objects.all().order_by("-date")[:20]
@@ -67,6 +90,7 @@ def cross_item(request, item_id):
                 all_items_completed = False
         if all_items_completed:
             category.completed = True
+            category.status = Status.objects.get(pk=settings.CROSSED_STATUS_ID)
             category.save()
     except:
         pass
@@ -120,10 +144,14 @@ def show_full_list(request, list_id):
 
     if request.method == 'POST' and 'change_status' in request.POST:
         item = get_object_or_404(ListItem, pk=request.POST.get('item_id'))
-        item.status = get_object_or_404(Status, pk=request.POST.get('status_id'))
+        status = get_object_or_404(Status, pk=request.POST.get('status_id'))
+        item.status = status
         item.save()
+        if status.id == 2:
+            cross_item(request, item.id)
+        else:
+            uncross_item(request, item.id)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
@@ -189,6 +217,6 @@ def edit_list(request, list_id):
         item_form = ItemForm
     return render(request, 'checklist/edit_list.html',
                   {
-                   'new_list_items': new_list_items,
-                   'item_form': item_form,
-                   'checklist': checklist})
+                      'new_list_items': new_list_items,
+                      'item_form': item_form,
+                      'checklist': checklist})
