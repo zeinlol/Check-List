@@ -1,19 +1,24 @@
 from django.conf import settings
+from django.contrib.auth.models import User, Group
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from rest_framework import permissions
+from rest_framework import viewsets
 
 from .forms import ListForm, CommentForm, ItemForm
 from .models import CheckList, ListItem, Status
-from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from rest_framework import permissions
 from .serializers import UserSerializer, GroupSerializer, CheckListSerializer, ListItemSerializer
 
 
 class CheckListViewSet(viewsets.ModelViewSet):
     queryset = CheckList.objects.all().order_by('-date')
     serializer_class = CheckListSerializer
+
+
+class ListItemViewSet(viewsets.ModelViewSet):
+    queryset = ListItem.objects.all().order_by('id')
+    serializer_class = ListItemSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):

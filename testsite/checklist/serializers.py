@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import CheckList, ListItem, Status
+
+from .models import CheckList, ListItem
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
