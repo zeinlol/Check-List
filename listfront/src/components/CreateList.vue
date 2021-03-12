@@ -40,6 +40,7 @@ export default {
     createList() {
       this.$store.dispatch('createList', {name: this.name, description: this.description})
     },
+
   },
 }
 </script>

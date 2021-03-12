@@ -10,8 +10,8 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 class ListItemsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'related_list')
-    list_filter = ('completed', 'related_list')
+    list_display = ('title', 'related_list', 'date')
+    list_filter = ('completed', 'related_list', 'date')
     search_fields = ('title', 'related_list',)
 
 

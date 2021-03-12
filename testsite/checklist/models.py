@@ -38,6 +38,7 @@ class ListItem(models.Model):
     related_to = models.ForeignKey('self', on_delete=models.CASCADE, db_index=True, null=True, blank=True,
                                    related_name='related_items')
     comments = models.ManyToManyField('Comment', blank=True, related_name='comments')
+    date = models.DateField("Created", default=datetime.date.today)
 
     def __str__(self):
         return self.title

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {CheckList, ListItems} from '@/api/checklists_main'
-import {ADD_LIST, REMOVE_LIST, SET_LISTS, ADD_ITEM, REMOVE_ITEM, SET_ITEMS} from './mutation-types.js'
+import {ADD_LIST, REMOVE_LIST, SET_LISTS, ADD_ITEM, REMOVE_ITEM, SET_ITEMS, CHANGE_STATE} from './mutation-types.js'
 
 Vue.use(Vuex)
 
@@ -17,6 +17,7 @@ const getters = {
 
 const mutations = {
   [ADD_LIST](state, list) {
+    console.log('AND NOW IN CONST MATATIONS')
     state.lists = {list, ...state.lists}
   },
   [REMOVE_LIST](state, {id}) {
@@ -24,24 +25,29 @@ const mutations = {
       return list.id !== id
     })
   },
+  [CHANGE_STATE](state, list) {
+    
+    list.completed = status
+  },
   [SET_LISTS](state, {lists}) {
     state.lists = lists
   },
-  [ADD_ITEM](state, item) {
-    state.lists = {item, ...state.lists}
+  [ADD_ITEM](state, items) {
+    state.items = {items, ...state.lists}
   },
   [REMOVE_ITEM](state, {id}) {
-    state.lists = state.lists.filter(list => {
-      return list.id !== id
+    state.items = state.lists.filter(items => {
+      return items.id !== id
     })
   },
   [SET_ITEMS](state, {items}) {
-    state.lists = items
+    state.items = items
   },
 }
 
 const actions = {
   createList({commit}, listData) {
+    console.log('CONST ACTIONS')
     CheckList.create(listData).then(list => {
       commit(ADD_LIST, list)
     })
@@ -54,6 +60,11 @@ const actions = {
   getLists({commit}) {
     CheckList.list().then(lists => {
       commit(SET_LISTS, {lists})
+    })
+  },
+  changeListState({commit}, listdata) {
+    CheckList.changeState(listdata).then(list => {
+      commit(CHANGE_STATE, list)
     })
   },
   createItem({commit}, itemData) {

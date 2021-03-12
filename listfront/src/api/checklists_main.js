@@ -2,15 +2,26 @@ import {HTTP_GET_ITEMS, HTTP_GET_LISTS} from './common'
 
 export const CheckList = {
   create(config) {
-    return HTTP_GET_LISTS.post('/lists/', config).then(response => {
+    console.log('CREATE LIST')
+    return HTTP_GET_LISTS.post('', config).then(response => {
       return response.data
     })
   },
   delete(checklist) {
-    return HTTP_GET_LISTS.delete(`/lists/${checklist.id}/`)
+    return HTTP_GET_LISTS.delete(`${checklist.id}/`)
   },
   list() {
-    return HTTP_GET_LISTS.get('/lists/').then(response => {
+    return HTTP_GET_LISTS.get('').then(response => {
+      console.log(response.data)
+      return response.data
+    })
+  },
+  changeState(listdata) {
+    console.log(listdata)
+    return HTTP_GET_LISTS.patch(`${listdata.list.id}/`, listdata.list.completed = listdata.state)
+  },
+  goTo(config) {
+    return HTTP_GET_ITEMS.get('', config).then(response => {
       return response.data
     })
   },
