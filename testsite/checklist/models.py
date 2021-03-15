@@ -17,10 +17,10 @@ class CheckList(models.Model):
     objects = models.Manager()
     name = models.CharField(max_length=100)
     description = models.TextField()
-    completed = models.BooleanField(default=False)
+    done = models.BooleanField(default=False)
     date = models.DateField("Created", default=datetime.date.today)
 
-    # users_with_access = models.ManyToManyField(User, related_name='checklists')     # Connect to user for access
+    # users_with_access = models.ManyToManyField(User, related_name='store')     # Connect to user for access
 
     def __str__(self):
         return str(self.name)
@@ -30,7 +30,7 @@ class CheckList(models.Model):
 class ListItem(models.Model):
     objects = models.Manager()
     title = models.CharField(max_length=150)
-    completed = models.BooleanField(default=False)
+    done = models.BooleanField(default=False)
     status = models.ForeignKey(Status, on_delete=models.CASCADE, db_index=True, null=True,
                                default=settings.DEFAULT_STATUS_ID)
     related_list = models.ForeignKey(CheckList, on_delete=models.CASCADE, db_index=True, null=True,

@@ -3,20 +3,25 @@
     <div class="card checklist-item" v-for="checklist in lists" :key="checklist.id">
       <div class="card-body list-group text-center">
         <h2 class="card-title checklist-title">
-          <i class="fa fa-check" aria-hidden="true" v-if="checklist.completed"
+          <i class="fa fa-check" aria-hidden="true" v-if="checklist.done"
              @click="changeListState(checklist, false)"></i>
-          <a href="#a" v-else @click="changeListState(checklist, true)"><i class="fa fa-square-o"
-                                                                           aria-hidden="true"></i></a>
-          <a :href="'/list/' + checklist.id">{{ checklist.name }}</a>
+          <i class="fa fa-square-o" aria-hidden="true" v-else @click="changeListState(checklist, true)"></i>
+          {{ checklist.name }}
         </h2>
         <p class="card-subtitle text-muted">Created: {{ checklist.date }}</p>
         <p class="card-text list-description">{{ checklist.description }}</p>
+        <list-view></list-view>
+        <form class="form-horizontal" type="submit" @submit="submitForm">
+          <label class="form-label">Title</label>
+          <input class="form-input" type="text" v-model="name" placeholder="Type checklist title...">
+          <input class="form-input" type="hidden" v-model="related_list">
+          <button class="btn btn-primary" type="submit" @click="createItem(related_list=checklist.id)">Create</button>
+        </form>
+
         <button type="button" class="btn btn-outline-danger" data-toggle="modal"
-                :data-target="'#check-modal-' + checklist.id">Delete List
+                :data-target="'#delete-list' + checklist.id">Delete List
         </button>
-
-
-        <div class="modal" :id="'check-modal-' + checklist.id" tabindex="-1" aria-hidden="true">
+        <div class="modal" :id="'delete-list' + checklist.id" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -36,7 +41,6 @@
             </div>
           </div>
         </div>
-
       </div>
 
     </div>
@@ -47,10 +51,22 @@
 <script>
 import {mapGetters} from 'vuex'
 import prettydate from 'pretty-date'
+import ListView from "@/components/ListView";
 
 export default {
   name: 'lists-list',
+  components: {ListView},
+  data() {
+    return {
+      name: '',
+      related_list: null,
+    }
+  },
   computed: mapGetters(['lists']),
+  comments: {
+    'list-view': ListView,
+  },
+
   methods: {
     convertDateToTimeAgo(date) {
       return prettydate.format(new Date(date))
@@ -59,8 +75,16 @@ export default {
       this.$store.dispatch('deleteList', list)
     },
     changeListState(list, state) {
-      console.log(list.toString(), state.toString())
-      this.$store.dispatch('changeListState', {list, state})
+      this.$store.dispatch('changeCheckListState', {list, state})
+    },
+    submitForm(event) {
+      this.createItem()
+      this.name = ''
+      this.related_list = null
+      event.preventDefault()
+    },
+    createItem() {
+      this.$store.dispatch('createItem', {name: this.name, related_list: this.related_list})
     },
   },
   beforeMount() {
@@ -106,5 +130,7 @@ span.completed {
   background-color: #e2e2e2;
 }
 
-
+i {
+  cursor: pointer;
+}
 </style>

@@ -17,7 +17,7 @@
 
 <table class="table table-bordered">
     {% for list in checklists %}
-    {% if list.completed %}
+    {% if list.done %}
     <tr class="table-secondary">
         <td><a href="{% url 'uncross_list' list.id %}"><i class="fa fa-check fa-2x" aria-hidden="true"></i></a></td>
         <td><a href="{% url 'checklist' list.id %}">{{ list.name }}</a></td>

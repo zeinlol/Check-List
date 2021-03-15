@@ -15,10 +15,6 @@
       .col-9
         button.btn.btn-primary(type="submit") Create
 
-
-
-
-
 </template>
 
 <script>

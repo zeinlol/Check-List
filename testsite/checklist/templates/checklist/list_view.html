@@ -16,7 +16,7 @@
             <span class="btn btn-link btn-block text-left collapsed " data-toggle="collapse"
                   data-target="#category{{ category.0.id }}" aria-expanded="true"
                   aria-controls="category{{ category.0.id }}">
-                {% if category.0.completed %}
+                {% if category.0.done %}
                 <a href="{% url 'uncross_item' category.0.id %}" class="accordion-link"><i class="fa fa-check fa-2x"
                                                                                            aria-hidden="true"></i></a>
                 <span class="completed category_name">{{ category.0 }}
@@ -48,7 +48,7 @@
                 </span>
                     <hr>
                     {% for subtask in category.1 %}
-                    {% if subtask.completed %}
+                    {% if subtask.done %}
                     <div class="completed subtask-item">
                         {% include 'checklist/includes/completed_subtask.html' %}
                     </div>

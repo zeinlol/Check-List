@@ -41,7 +41,7 @@ def show_lists(request):
         delete_list(request.POST.get('list_id'))
 
         return render(request, 'checklist/checklist_list.html',
-                      {'checklists': checklists, 'add_list_form': add_list_form})
+                      {'store': checklists, 'add_list_form': add_list_form})
     elif request.method == 'POST':
         form = ListForm(request.POST)
         if form.is_valid():
@@ -51,7 +51,7 @@ def show_lists(request):
             return HttpResponseRedirect('/')
 
     else:
-        return render(request, 'checklist/checklist_list.html', {'checklists': checklists,
+        return render(request, 'checklist/checklist_list.html', {'store': checklists,
                                                                  'add_list_form': add_list_form})
 
 
@@ -59,7 +59,7 @@ def show_lists(request):
 # Bullshit  (OLD BLOCK)
 def cross_list(request, list_id):
     item = CheckList.objects.get(pk=list_id)
-    item.completed = True
+    item.done = True
     item.save()
     categories = item.item_list.order_by('id')
     for task in categories:
@@ -69,7 +69,7 @@ def cross_list(request, list_id):
 
 def uncross_list(request, list_id):
     item = CheckList.objects.get(pk=list_id)
-    item.completed = False
+    item.done = False
     item.save()
     categories = item.item_list.order_by('id')
     for task in categories:
@@ -79,7 +79,7 @@ def uncross_list(request, list_id):
 
 def cross_item(request, item_id):
     item = ListItem.objects.get(pk=item_id)
-    item.completed = True
+    item.done = True
     item.status = Status.objects.get(pk=settings.CROSSED_STATUS_ID)
     item.save()
     sub_item = item.related_items.order_by('id')
@@ -91,10 +91,10 @@ def cross_item(request, item_id):
         category = ListItem.objects.get(related_items=item)
         subtasks = category.related_items.order_by('id')
         for task in subtasks:
-            if task.completed is False:
+            if task.done is False:
                 all_items_completed = False
-        if all_items_completed:
-            category.completed = True
+        if all_items_done:
+            category.done = True
             category.status = Status.objects.get(pk=settings.CROSSED_STATUS_ID)
             category.save()
     except:
@@ -104,7 +104,7 @@ def cross_item(request, item_id):
 
 def uncross_item(request, item_id):
     item = ListItem.objects.get(pk=item_id)
-    item.completed = False
+    item.done = False
     item.status = Status.objects.get(pk=settings.UNCROSSED_STATUS_ID)
     item.save()
     sub_item = item.related_items.order_by('id')
@@ -112,7 +112,7 @@ def uncross_item(request, item_id):
         uncross_item(request, task.id)
     try:
         category = ListItem.objects.get(related_items=item)
-        category.completed = False
+        category.done = False
         category.save()
     except:
         pass

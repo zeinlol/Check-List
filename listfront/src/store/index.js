@@ -17,7 +17,6 @@ const getters = {
 
 const mutations = {
   [ADD_LIST](state, list) {
-    console.log('AND NOW IN CONST MATATIONS')
     state.lists = {list, ...state.lists}
   },
   [REMOVE_LIST](state, {id}) {
@@ -25,18 +24,17 @@ const mutations = {
       return list.id !== id
     })
   },
-  [CHANGE_STATE](state, list) {
-    
-    list.completed = status
+  [CHANGE_STATE](state, listdata) {
+    state.list.done = listdata.state
   },
   [SET_LISTS](state, {lists}) {
     state.lists = lists
   },
   [ADD_ITEM](state, items) {
-    state.items = {items, ...state.lists}
+    state.items = {items, ...state.items}
   },
   [REMOVE_ITEM](state, {id}) {
-    state.items = state.lists.filter(items => {
+    state.items = state.items.filter(items => {
       return items.id !== id
     })
   },
@@ -47,7 +45,6 @@ const mutations = {
 
 const actions = {
   createList({commit}, listData) {
-    console.log('CONST ACTIONS')
     CheckList.create(listData).then(list => {
       commit(ADD_LIST, list)
     })
@@ -62,12 +59,13 @@ const actions = {
       commit(SET_LISTS, {lists})
     })
   },
-  changeListState({commit}, listdata) {
-    CheckList.changeState(listdata).then(list => {
-      commit(CHANGE_STATE, list)
+  changeCheckListState({commit}, listdata) {
+    CheckList.changeState(listdata).then(listdata => {
+      commit(CHANGE_STATE, listdata)
     })
   },
   createItem({commit}, itemData) {
+    console.log(itemData)
     ListItems.create(itemData).then(item => {
       commit(ADD_ITEM, item)
     })
@@ -77,8 +75,8 @@ const actions = {
       commit(REMOVE_ITEM, item, response)
     })
   },
-  getItems({commit}) {
-    ListItems.items().then(items => {
+  getItems({commit}, list_id) {
+    ListItems.items(list_id).then(items => {
       commit(SET_ITEMS, {items})
     })
   },

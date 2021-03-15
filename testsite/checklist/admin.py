@@ -11,13 +11,13 @@ class CommentAdmin(admin.ModelAdmin):
 
 class ListItemsAdmin(admin.ModelAdmin):
     list_display = ('title', 'related_list', 'date')
-    list_filter = ('completed', 'related_list', 'date')
+    list_filter = ('done', 'related_list', 'date')
     search_fields = ('title', 'related_list',)
 
 
 class ListsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'date', 'completed')
-    list_filter = ('name', 'date', 'completed')
+    list_display = ('name', 'description', 'date', 'done')
+    list_filter = ('name', 'date', 'done')
     search_fields = ('name',)
 
 

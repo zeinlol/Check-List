@@ -19,10 +19,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class ListItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListItem
-        fields = ('id', 'title', 'completed', 'status', 'related_list', 'related_to', 'comments', 'date')
+        fields = ('id', 'title', 'done', 'status', 'related_list', 'related_to', 'comments', 'date')
 
 
 class CheckListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CheckList
-        fields = ('id', 'name', 'description', 'completed', 'date')
+        fields = ('id', 'name', 'description', 'done', 'date')
